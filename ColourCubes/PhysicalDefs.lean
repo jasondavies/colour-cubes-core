@@ -1,6 +1,8 @@
 module
 
 public import ColourCubes.GeometryDefs
+public import Mathlib.Data.Finset.Card
+public import Mathlib.Data.Fintype.Basic
 
 @[expose] public section
 
@@ -29,6 +31,11 @@ instance {α : Type*} [Fintype α] [DecidableEq α] (c : Cube α) :
 def TableFits {α : Type*} (c t : Cube α) (k : Fin 8) : Prop :=
   ∃ r : Fin 24, ∀ f : Fin 3,
     c (rotations r (exposedFaces k f)) = t (exposedFaces k f)
+
+instance {α : Type*} [DecidableEq α] (c t : Cube α) (k : Fin 8) :
+    Decidable (TableFits c t k) := by
+  unfold TableFits
+  infer_instance
 
 /-- Matching the three exterior faces by a geometric proper rotation. -/
 def Fits {α : Type*} (c t : Cube α) (k : Fin 8) : Prop :=

@@ -1,6 +1,7 @@
 module
 
 public import ColourCubes.Geometry
+public import Mathlib.Algebra.Group.Fin.Basic
 
 @[expose] public section
 
@@ -41,6 +42,18 @@ instance {α : Type*} [DecidableEq α] (a b : Fin 3 → α) : Decidable (CyclicE
   unfold CyclicEq
   infer_instance
 
+lemma cyclicEq_trans {α : Type*} {a b c : Fin 3 → α} (hab : CyclicEq a b)
+    (hbc : CyclicEq b c) : CyclicEq a c := by
+  obtain ⟨s, hs⟩ := hab
+  obtain ⟨t, ht⟩ := hbc
+  refine ⟨t + s, fun f => ?_⟩
+  rw [← add_assoc, hs, ht]
+
+lemma cyclicEq_symm {α : Type*} {a b : Fin 3 → α} (h : CyclicEq a b) : CyclicEq b a := by
+  obtain ⟨s, hs⟩ := h
+  refine ⟨-s, fun f => ?_⟩
+  simpa using (hs (f + -s)).symm
+
 /-- A cube fits a target corner precisely when it has the same cyclic corner type.
 This statement is independent of the palette and allows repeated colours. -/
 theorem corner_rotation_iff {α : Type*} (c t : Fin 6 → α) (k : Fin 8) :
@@ -68,14 +81,7 @@ than indices in the verified rotation table. -/
 theorem corner_proper_rotation_iff {α : Type*} (c t : Fin 6 → α) (k : Fin 8) :
     (∃ r : Fin 6 → Fin 6, ColourCubes.ProperRotation r ∧ ∀ f : Fin 3,
       c (r (ColourCubes.exposedFaces k f)) = t (ColourCubes.exposedFaces k f)) ↔
-    ∃ l : Fin 8, CyclicEq (corner c l) (corner t k) := by
-  rw [← corner_rotation_iff]
-  constructor
-  · rintro ⟨r, hr, h⟩
-    obtain ⟨n, rfl⟩ := (ColourCubes.proper_rotation_iff r).mp hr
-    exact ⟨n, h⟩
-  · rintro ⟨n, h⟩
-    exact ⟨ColourCubes.rotations n,
-      (ColourCubes.proper_rotation_iff _).mpr ⟨n, rfl⟩, h⟩
+    ∃ l : Fin 8, CyclicEq (corner c l) (corner t k) :=
+  (ColourCubes.exists_proper_rotation_iff _).trans (corner_rotation_iff c t k)
 
 end ColourCubes.Geometry

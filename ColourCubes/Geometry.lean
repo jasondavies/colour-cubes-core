@@ -1,10 +1,10 @@
 module
 
 public import ColourCubes.GeometryDefs
+public import Mathlib.Data.Fintype.Pi
 
 @[expose] public section
-set_option maxHeartbeats 0
-set_option maxRecDepth 100000
+
 namespace ColourCubes
 
 theorem rotation_table_valid : ∀ n : Fin 24,
@@ -23,6 +23,17 @@ theorem proper_rotation_iff (r : Fin 6 → Fin 6) :
   · rintro ⟨n,rfl⟩
     exact ⟨_,_,_,rotation_table_valid n⟩
 
+/-- Quantifying over geometric proper rotations is the same as quantifying
+over indices in the verified rotation table. -/
+theorem exists_proper_rotation_iff (P : (Fin 6 → Fin 6) → Prop) :
+    (∃ r, ProperRotation r ∧ P r) ↔ ∃ n : Fin 24, P (rotations n) := by
+  constructor
+  · rintro ⟨r, hr, h⟩
+    obtain ⟨n, rfl⟩ := (proper_rotation_iff r).mp hr
+    exact ⟨n, h⟩
+  · rintro ⟨n, h⟩
+    exact ⟨rotations n, (proper_rotation_iff _).mpr ⟨n, rfl⟩, h⟩
+
 theorem rotations_bijective : ∀ n : Fin 24, Function.Bijective (rotations n) := by
   decide +kernel
 
@@ -35,7 +46,7 @@ theorem rotation_composition : ∀ r s : Fin 24, ∃ t : Fin 24,
     ∀ f : Fin 6, rotations t f = rotations r (rotations s f) := by decide +kernel
 
 /-- The three outward faces at each of the eight binary cube positions. -/
-theorem exposed_face_rule : ∀ k : Slot, ∀ d : Fin 3,
+theorem exposed_face_rule : ∀ k : Fin 8, ∀ d : Fin 3,
     (exposedFaces k d).val = 2*d.val + (k.val / 2^(2-d.val)) % 2 := by decide +kernel
 
 end ColourCubes

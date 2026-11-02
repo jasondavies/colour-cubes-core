@@ -1,21 +1,19 @@
 module
 
-public import Mathlib
+public import Mathlib.Data.Fin.VecNotation
 
 @[expose] public section
 
 namespace ColourCubes
 
-abbrev Face := Fin 6
-abbrev Slot := Fin 8
-def exposedFaces : Slot → Fin 3 → Fin 6 := ![![0, 2, 4], ![0, 2, 5], ![0, 3, 4], ![0, 3, 5], ![1, 2, 4], ![1, 2, 5], ![1, 3, 4], ![1, 3, 5]]
+/-- Faces `2i` and `2i + 1` are opposite, normal to coordinate axis `i`.
+The outward faces at slot `k` are chosen by the binary digits of `k`. -/
+def exposedFaces : Fin 8 → Fin 3 → Fin 6 := ![![0, 2, 4], ![0, 2, 5], ![0, 3, 4], ![0, 3, 5], ![1, 2, 4], ![1, 2, 5], ![1, 3, 4], ![1, 3, 5]]
 
 def rotations : Fin 24 → Fin 6 → Fin 6 := ![![0, 1, 2, 3, 4, 5], ![0, 1, 3, 2, 5, 4], ![0, 1, 4, 5, 3, 2], ![0, 1, 5, 4, 2, 3], ![1, 0, 2, 3, 5, 4], ![1, 0, 3, 2, 4, 5], ![1, 0, 4, 5, 2, 3], ![1, 0, 5, 4, 3, 2], ![2, 3, 0, 1, 5, 4], ![2, 3, 1, 0, 4, 5], ![2, 3, 4, 5, 0, 1], ![2, 3, 5, 4, 1, 0], ![3, 2, 0, 1, 4, 5], ![3, 2, 1, 0, 5, 4], ![3, 2, 4, 5, 1, 0], ![3, 2, 5, 4, 0, 1], ![4, 5, 0, 1, 2, 3], ![4, 5, 1, 0, 3, 2], ![4, 5, 2, 3, 1, 0], ![4, 5, 3, 2, 0, 1], ![5, 4, 0, 1, 3, 2], ![5, 4, 1, 0, 2, 3], ![5, 4, 2, 3, 0, 1], ![5, 4, 3, 2, 1, 0]]
 
-theorem faceOne_bound : 1 < 6 := by decide
-
 def opposite (f : Fin 6) : Fin 6 :=
-  if f.val % 2 = 0 then f + ⟨1, faceOne_bound⟩ else f - ⟨1, faceOne_bound⟩
+  if f.val % 2 = 0 then f + 1 else f - 1
 def fromAxes (a b c : Fin 6) : Fin 6 → Fin 6 :=
   ![a, opposite a, b, opposite b, c, opposite c]
 
