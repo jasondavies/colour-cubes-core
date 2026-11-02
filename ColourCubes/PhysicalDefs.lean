@@ -20,6 +20,11 @@ instance {α : Type*} [DecidableEq α] (n : ℕ) (c : Cube α) : Decidable (Uses
 /-- Every colour in the palette occurs. -/
 def UsesAllColours {α : Type*} (c : Cube α) : Prop := ∀ a, ∃ f, c f = a
 
+instance {α : Type*} [Fintype α] [DecidableEq α] (c : Cube α) :
+    Decidable (UsesAllColours c) := by
+  unfold UsesAllColours
+  infer_instance
+
 /-- Matching by an index in the verified rotation table. -/
 def TableFits {α : Type*} (c t : Cube α) (k : Fin 8) : Prop :=
   ∃ r : Fin 24, ∀ f : Fin 3,
