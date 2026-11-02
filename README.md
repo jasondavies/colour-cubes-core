@@ -1,4 +1,4 @@
-# Colour cubes core
+# colour-cubes-core
 
 Lean definitions and proofs for face-coloured cubes, for any palette:
 proper rotations, corner types, and assembling eight cubes into a 2×2×2 target.
