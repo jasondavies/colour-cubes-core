@@ -53,8 +53,8 @@ lake exe cache get
 make check
 ```
 
-This builds the library, rejects proof holes, `native_decide` and non-mathlib
-imports, and checks that every public theorem in `Audit.lean` uses only
+This builds the library, rejects proof holes, `native_decide`, kernel-check
+bypasses and non-mathlib imports, and checks that every public theorem in `Audit.lean` uses only
 `propext`, `Classical.choice` and `Quot.sound`. No cube catalogues,
 colour-specific theorems or certificate archives are included.
 
