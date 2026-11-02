@@ -1,0 +1,119 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+version: "v0.4"
+project:
+  name: "colour-cubes-core"
+  description: >-
+    Palette-independent Lean definitions and proofs for face-coloured cubes:
+    coordinate faces, the 24 proper rotations, exposed faces at the eight
+    corner positions of a 2×2×2 target, oriented corner types, and a physical
+    model in which eight distinct copies are placed by proper rotations to
+    match a target's exterior faces. The main theorem states that a cube fits
+    a corner position exactly when it has a corner of the same cyclic type,
+    for any palette and allowing repeated colours.
+  authors: ["Jason Davies"]
+  responsible_maintainers: ["Jason Davies"]
+  license: "Apache-2.0"
+repository:
+  role: substantive-development
+classification:
+  arxiv: ["cs.LO", "math.CO"]
+  msc2020: ["68V15", "00A08"]
+related_formalizations:
+  - id: "https://github.com/jasondavies/macmahon-min-universal-sets/tree/3f854795a77cd7c902e4c5a1a5da3322f9cd44fa"
+    relationship: builds-on
+    note: >-
+      Source of the rotation table, exposed-face table and rotation lemmas,
+      separated here from the six-colour definitions and data.
+  - id: "https://github.com/jasondavies/four-to-three-colour-cubes/tree/d69d92b2c7ba725f986054d8f1157c88b0a0eafa"
+    relationship: builds-on
+    note: >-
+      Source of the palette-independent corner–rotation theorem and the
+      corner-position permutations.
+  - id: "https://github.com/jasondavies/five-colour-cubes/tree/c959cc786bade7d479fae74d8fcc64a76bf1f93b"
+    relationship: builds-on
+    note: >-
+      Source of the rotation-transport lemmas for solutions, generalised here
+      to arbitrary palettes.
+status:
+  scope: >-
+    Geometry of the 24 proper rotations, exposed faces and corner positions;
+    equivalence of geometric proper rotations with the verified rotation table;
+    the corner–rotation theorem for arbitrary palettes; the common physical
+    model (Cube, Fits, Builds, HasSolution); and rotation invariance of
+    solutions. No cube catalogues, colour-specific theorems or certificate
+    archives are included.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: []
+automation:
+  methods:
+    - method: agent
+      models: ["GPT-6-Astra (OpenAI)"]
+      framework: "Codex"
+      tool_setup: >-
+        Under the author's direction, extracted the palette-independent
+        geometry from the three source projects, generalised the physical
+        model and rotation-transport lemmas to arbitrary palettes, and set up
+        the axiom audit, source checks and CI.
+      cost:
+        wall_time: "not tracked"
+        spend_usd: "not tracked"
+        hardware: "local CPU"
+      prompting_notes: "Extract a minimal shared library for the colour-cube projects, depending only on mathlib."
+    - method: agent
+      models: ["Claude Opus 5.5 (Anthropic; claude-opus-5-5)"]
+      framework: "Claude Code"
+      tool_setup: >-
+        Advised on the scope of the shared library and revised the README.
+        No Lean code was written by this model.
+      cost:
+        wall_time: "not tracked"
+        spend_usd: "not tracked"
+        hardware: "none beyond the hosted model"
+      prompting_notes: "Review the library's scope and documentation."
+  spend_usd: "not tracked"
+  notes: >-
+    The extracted mathematics was originally developed in the source projects,
+    whose own formalization.yaml files record its attribution. The human author
+    directed the extraction and accepts responsibility for this library.
+    No native_decide is used.
+fidelity:
+  divergences: >-
+    Cubes are maps from the six coordinate faces, ordered +x, -x, +y, -y,
+    +z, -z, to an arbitrary palette. Proper rotations are signed axis
+    permutations of determinant +1, shown equivalent to a 24-entry table.
+    Only exterior faces of the target are matched; internal faces impose no
+    conditions. Copies are indexed, so repeated colourings are allowed and
+    each index is used at most once.
+review:
+  status: "Not independently reviewed by a human expert"
+  reviewers: []
+  notes: >-
+    Reproduce the checks with lake exe cache get and make check. CI runs the
+    same checks on pushes and pull requests. Kernel replay of results that
+    depend on this library is performed by the consuming projects' comparator
+    runs.
+alignment:
+  namespace: ColourCubes
+  statements:
+    - source: "README, corner–rotation theorem for the physical model"
+      lean: ColourCubes.fits_iff_corner
+      module: ColourCubes.Physical
+      status: proved
+    - source: "README, corner–rotation theorem for the rotation table"
+      lean: ColourCubes.Geometry.corner_rotation_iff
+      module: ColourCubes.Corners
+      status: proved
+    - source: "README, geometric rotations agree with the table"
+      lean: ColourCubes.proper_rotation_iff
+      module: ColourCubes.Geometry
+      status: proved
+    - source: "README, solutions via the rotation table"
+      lean: ColourCubes.builds_iff_tableFits
+      module: ColourCubes.Physical
+      status: proved
+    - source: "README, rotation invariance of solutions"
+      lean: ColourCubes.builds_rotate
+      module: ColourCubes.RotationAction
+      status: proved
+acknowledgements: "Lean 4, mathlib, and the formalization.yaml template authors."
